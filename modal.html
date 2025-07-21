@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript" src="https://code.jquery.com/jquery.min.js"></script>
+    
+    <style>
+      * {
+        margin: 0 auto;
+        box-sizing: border-box
+      }
+    
+      *::before,
+      *::after {
+        box-sizing: border-box
+      }
+      body.modal-open {
+        position: fixed;
+        overflow-y: scroll; /* vẫn giữ scrollbar để tránh layout shift */
+        width: 100%;
+      }
+
+      .modal {
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        align-items: center;
+        display: none;
+        justify-content: center;
+        overflow: hidden;
+        position: fixed;
+        z-index: 40
+      }
+    
+      .modal.is-active {
+        display: flex
+      }
+    
+      .modal-background {
+        background-color: rgba(10, 10, 10, .86);
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    
+      .modal-card,
+      .modal-content {
+        margin: 0 20px;
+        max-height: calc(100vh - 160px);
+        overflow: auto;
+        position: relative;
+        width: 100%
+      }
+    
+      .modal-content {
+        padding: 15px;
+        margin: 0
+      }
+    
+      .modal-card {
+        background-color: #fff;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 40px);
+        overflow: hidden
+      }
+    
+      .modal-card-foot,
+      .modal-card-head {
+        padding: 20px;
+        position: relative
+      }
+    
+      .modal-card-head {
+        align-items: center;
+        display: flex;
+        flex-shrink: 0;
+        justify-content: flex-start;
+        margin: unset;
+        border-bottom: 1px solid #dbdbdb;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px
+      }
+    
+      .modal-card-title {
+        color: #363636;
+        flex-grow: 1;
+        flex-shrink: 0;
+        font-size: 1.5rem;
+        line-height: 1
+      }
+    
+      .modal-card-foot {
+        width: 100%;
+        text-align: center;
+        border-top: 1px solid #dbdbdb
+      }
+    
+      .modal-card-foot .button:not(:last-child) {
+        margin-right: 10px
+      }
+    
+      .delete {
+        user-select: none;
+        -moz-appearance: none;
+        background-color: rgba(10, 10, 10, .2);
+        border: none;
+        border-radius: 290486px;
+        cursor: pointer;
+        display: inline-block;
+        flex-grow: 0;
+        flex-shrink: 0;
+        font-size: 0;
+        height: 20px;
+        max-height: 20px;
+        max-width: 20px;
+        min-height: 20px;
+        min-width: 20px;
+        outline: 0;
+        position: relative;
+        vertical-align: top;
+        width: 20px
+      }
+    
+      .delete::after,
+      .delete::before {
+        background-color: #fff;
+        content: "";
+        display: block;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translateX(-50%) translateY(-50%) rotate(45deg);
+        transform-origin: center center
+      }
+    
+      .delete::before {
+        height: 2px;
+        width: 50%
+      }
+    
+      .delete::after {
+        width: 2px;
+        height: 50%
+      }
+
+    </style>
+    
+    
+    
+    <script>
+      jQuery(document).ready(function ($) {
+          $(".modal-button").click(function (ev) {
+            var modaltarget = $(this).data('target');
+
+            // Lưu scroll hiện tại
+            const scrollY = window.scrollY || window.pageYOffset;
+
+            // Khóa body scroll
+            $('body')
+              .addClass('modal-open')
+              .css({
+                top: `-${scrollY}px`
+              })
+              .attr('data-scroll-y', scrollY); // lưu lại để trả về sau
+
+            $(modaltarget).addClass("is-active");
+            $('.box .img', modaltarget).attr('src', $(this).data('src'));
+
+            ev.preventDefault();
+          });
+
+          $(".close, .modal-background").click(function () {
+            $(".modal").removeClass("is-active");
+            $('.box .img').attr('src', '');
+
+            // Lấy lại vị trí scroll trước đó
+            const scrollY = $('body').attr('data-scroll-y') || '0';
+
+            // Mở lại scroll body
+            $('body')
+              .removeClass('modal-open')
+              .removeAttr('data-scroll-y');
+
+            window.scrollTo(0, parseInt(scrollY, 10));
+          });
+        });
+
+    </script>
+    <div class="content" style="padding: 60vh 0; text-align: center;">
+      <button class="modal-button" data-target="#modal1" data-src="images/img1.jpg">open Modal 1</button>
+    </div><!-- end .content -->
+        <div id="modal1" class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <div class="modal-card-head">
+          <p class="modal-card-title">Modal 1</p>
+          <button class="delete close" aria-label="close"></button>
+        </div>
+        <div class="modal-content">
+          <img class="img" src="" alt="" />
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+        </div>
+        <div class="modal-card-foot">
+          <button>Save changes</button>
+          <button class="close">Cancel</button>
+        </div>
+      </div>
+    </div><!-- end .modal1 -->
+
+</body>
+</html>
